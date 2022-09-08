@@ -9,7 +9,15 @@
  *   SAP - initial API and implementation
  */
 
-var daoTemplateManager = require("template-application-dao-mongodb/template/template");
+const daoTemplateManager = require("template-application-dao-mongodb/template/template");
+const generateUtils = require("ide-generate-service/template/generateUtils");
+const parameterUtils = require("ide-generate-service/template/parameterUtils");
+
+exports.generate = function (model, parameters) {
+    let templateSources = exports.getTemplate(parameters).sources;
+    parameterUtils.process(model, parameters)
+    return generateUtils.generateFiles(model, parameters, templateSources);
+};
 
 exports.getTemplate = function (parameters) {
     let daoTemplate = daoTemplateManager.getTemplate(parameters);
@@ -21,7 +29,7 @@ exports.getTemplate = function (parameters) {
     }, {
         location: "/template-application-rest/api/entity.js.template",
         action: "generate",
-        rename: "gen/api/{{perspectiveName}}/{{fileName}}.js",
+        rename: "gen/api/{{perspectiveName}}/{{name}}.js",
         engine: "velocity",
         collection: "models"
     }];
